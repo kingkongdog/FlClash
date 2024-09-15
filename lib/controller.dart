@@ -147,7 +147,6 @@ class AppController {
   changeProfile(String? value) async {
     if (value == config.currentProfileId) return;
     config.currentProfileId = value;
-    autoPollingUpdateCurrentProfile();
   }
 
   autoUpdateProfiles() async {
@@ -174,23 +173,15 @@ class AppController {
     }
   }
 
-  autoPollingUpdateCurrentProfile() async {
-    if(config.autoPollingUpdateCurrentProfileTimer != null) {
-      config.autoPollingUpdateCurrentProfileTimer?.cancel();
-    }
-
+  autoPollingUpdateCurrentProfile() {
     final profile = config.currentProfile;
 
-    if(profile == null ) return;
-    if(profile.type == ProfileType.file) return;
-    if(!profile.autoUpdate) return;
-
-    Timer.periodic(profile.autoUpdateDuration, (timer) {
-      config.autoPollingUpdateCurrentProfileTimer = timer;
-      try {
-        updateProfile(profile);
-      } catch (e) {}
-    });
+    if(profile != null && profile.type == ProfileType.url && profile.autoUpdate) {
+      updateProfile(profile);
+      Future.delayed(profile.autoUpdateDuration, () {
+        autoPollingUpdateCurrentProfile();
+      });
+    }
   }
 
   updateProfiles() async {

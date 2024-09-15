@@ -144,7 +144,6 @@ class Config extends ChangeNotifier {
   DesktopProps _desktopProps;
   bool _showLabel;
   bool _overrideDns;
-  Timer? autoPollingUpdateCurrentProfileTimer;
 
   Config()
       : _profiles = [],
@@ -174,8 +173,7 @@ class Config extends ChangeNotifier {
         _desktopProps = const DesktopProps(),
         _showLabel = false,
         _overrideDns = false,
-        _scaleProps = const ScaleProps(),
-        autoPollingUpdateCurrentProfileTimer = null;
+        _scaleProps = const ScaleProps();
 
   deleteProfileById(String id) {
     _profiles = profiles.where((element) => element.id != id).toList();
