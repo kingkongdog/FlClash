@@ -178,7 +178,7 @@ class AppController {
 
     if(profile != null && profile.type == ProfileType.url && profile.autoUpdate) {
       updateProfile(profile);
-      Future.delayed(profile.autoUpdateDuration, () {
+      Timer(profile.autoUpdateDuration, () {
         autoPollingUpdateCurrentProfile();
       });
     }
