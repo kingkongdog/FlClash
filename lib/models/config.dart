@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -143,6 +144,7 @@ class Config extends ChangeNotifier {
   DesktopProps _desktopProps;
   bool _showLabel;
   bool _overrideDns;
+  Timer? autoPollingUpdateCurrentProfileTimer;
 
   Config()
       : _profiles = [],
@@ -172,7 +174,8 @@ class Config extends ChangeNotifier {
         _desktopProps = const DesktopProps(),
         _showLabel = false,
         _overrideDns = false,
-        _scaleProps = const ScaleProps();
+        _scaleProps = const ScaleProps(),
+        autoPollingUpdateCurrentProfileTimer = null;
 
   deleteProfileById(String id) {
     _profiles = profiles.where((element) => element.id != id).toList();

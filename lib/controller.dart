@@ -147,6 +147,7 @@ class AppController {
   changeProfile(String? value) async {
     if (value == config.currentProfileId) return;
     config.currentProfileId = value;
+    autoPollingUpdateCurrentProfile();
   }
 
   autoUpdateProfiles() async {
@@ -171,6 +172,25 @@ class AppController {
         );
       }
     }
+  }
+
+  autoPollingUpdateCurrentProfile() async {
+    if(config.autoPollingUpdateCurrentProfileTimer != null) {
+      config.autoPollingUpdateCurrentProfileTimer?.cancel();
+    }
+
+    final profile = config.currentProfile;
+
+    if(profile == null ) return;
+    if(profile.type == ProfileType.file) return;
+    if(!profile.autoUpdate) return;
+
+    Timer.periodic(profile.autoUpdateDuration, (timer) {
+      config.autoPollingUpdateCurrentProfileTimer = timer;
+      try {
+        updateProfile(profile);
+      } catch (e) {}
+    });
   }
 
   updateProfiles() async {
@@ -308,6 +328,7 @@ class AppController {
       await updateStatus(config.autoRun);
     }
     autoUpdateProfiles();
+    autoPollingUpdateCurrentProfile();
     autoCheckUpdate();
   }
 
