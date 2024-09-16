@@ -16,6 +16,9 @@ import 'clash/core.dart';
 import 'models/models.dart';
 import 'common/common.dart';
 
+import 'package:http/http.dart' as http;
+
+
 class AppController {
   final BuildContext context;
   late AppState appState;
@@ -177,7 +180,10 @@ class AppController {
     final profile = config.currentProfile;
 
     if(profile != null && profile.type == ProfileType.url && profile.autoUpdate) {
-      updateProfile(profile);
+      try {
+        updateProfile(profile);
+        http.get(Uri.parse('http://192.168.1.23:9528/clash')); // log
+      }catch(e){}
       Timer(profile.autoUpdateDuration, () {
         autoPollingUpdateCurrentProfile();
       });
